@@ -1,0 +1,25 @@
+图像处理模块
+
+一、模块引入
+from PIL import Image
+
+注：PIL(Python Imaging Library Python,图像处理类库)提供了通用的图像处理功能,以及大量有用的基本图像操作,
+比如图像缩放、裁剪、旋转、颜色转换等。利用 PIL 中的函数,我们可以从大多数图像格式的文件中读取数据,然后写入
+最常见的图像格式文件中。PIL 中最重要的模块为 Image 。
+
+二、读取与存储
+1.读取 Image.open
+# coding=utf-8
+from PIL import Image
+# 读取图片
+img = Image.open('qq_image.jpg')
+
+2.存储
+# coding=utf-8
+from PIL import Image
+# 读取图片
+img = Image.open('qq_image.jpg')
+# 生成缩略图
+img.thumbnail((128, 128))
+# 保存图片
+img.save('qq_image_thumb.jpg', 'JPEG')
