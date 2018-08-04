@@ -1,0 +1,98 @@
+python 图片转换为字符画
+
+思路：
+RGB彩色图像由一个个的像素点构成，而字符画是由一系列的字符构成
+如果像素点和字符之间可以构成一一对应的关系。
+
+字符画是一系列字符的组合，我们可以把字符看作是比较大块的像素，一个字符能表现一种颜色（暂且这么理解吧），字符的种类越多，
+可以表现的颜色也越多，图片也会更有层次感。
+
+问题来了，我们是要转换一张彩色的图片，这么这么多的颜色，要怎么对应到单色的字符画上去？这里就要介绍灰度值的概念了。
+
+灰度值：指黑白图像中点的颜色深度，范围一般从0到255，白色为255，黑色为0，故黑白图片也称灰度图像
+
+我们可以使用灰度值公式将像素的 RGB 值映射到灰度值：
+
+gray ＝ 0.2126 * r + 0.7152 * g + 0.0722 * b
+这样就好办了，我们可以创建一个不重复的字符列表，灰度值小（暗）的用列表开头的符号，灰度值大（亮）的用列表末尾的符号。
+
+
+
+
+from PIL import Image #从PIL模块中引入Image这个类
+import argparse #引入argparse这个模块。argparse 库是用来管理命令行参数输入的
+
+"""
+1：import argparse
+2：parser = argparse.ArgumentParser()
+3：parser.add_argument()
+4：parser.parse_args()
+解释：首先导入该模块；然后创建一个解析对象；
+然后向该对象中添加你要关注的命令行参数和选项，
+每一个add_argument方法对应一个你要关注的参数或选项；
+最后调用parse_args()方法进行解析；解析成功之后即可使用
+"""
+# 创建解析对象
+parser = argparse.ArgumentParser()
+# 向对象中添加命令行参数和选项
+# 添加输入文件参数
+parser.add_argument('file')
+# 添加输出文件参数
+parser.add_argument('-o', '--output')
+# 添加输出字符画宽参数
+parser.add_argument('--width', type = int, default = 80)
+# 添加输出字符画高参数
+parser.add_argument('--height', type = int, default = 80)
+# 获取参数数据，使用parse_args()解析 解析对象
+args = parser.parse_args()
+
+IMG = args.file
+WIDTH = args.width
+HEIGHT = args.height
+OUTPUT = args.output
+"""
+其中o，width，height为非必须参数，参数数据类型默认为字符串，除非设置type属性，default为参数默认数据。
+不加’-‘表示必须参数，同时也是参数名称,此时名称不可以通过添加’- -‘修改;
+加’-‘表示可选参数，此时参数名称为当前，如果后面有加’- -‘的，则参数名称改为’- -‘紧接的字符串，
+此时’-o’和’–output’均可作为输入时的参数声明；
+必须参数必须按照add_argument()的顺序添加参数值（中间可插入非必须参数），非必须参数可以打乱顺序，但需要参数名称和参数值一一对应
+"""
+
+
+#定义一个ascii的列表，其实就是让图片上的灰度与字符对应
+ascii_char = list("$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. ")
+
+# 将256灰度映射到70个字符上
+# 图片格式为RGB的*im.getpixel((j,i)后会得到三个参数r（red），g（green），b（blue）；RGBA得到四个参数r，g，b，alpha(透明度，0表示完全透明)
+# im.getpixel((j,i))得到一个由r, g, b, alpha(如果有的话)构成的元祖，加上*号即表示拆分元祖分别赋值引用
+def get_char(r,g,b,alpha = 256): #这个调用跟im.getpixel函数有关，这个函数是根据图片的横纵坐标，
+                                # 把图片解析成r,g,b,alpha(灰度），有关的四个参数，所以这里输入参数是四个
+    if alpha == 0: #如果灰度是0，说明这里没有图片
+        return ' '
+    length = len(ascii_char) #计算这些字符的长度
+    gray = int(0.2126 * r + 0.7152 * g + 0.0722 * b) #把图片的RGB值转换成灰度值
+    unit = (256.0 + 1)/length #单元字符的灰度值大小
+    return ascii_char[int(gray/unit)] # 字符从小到大表示灰度值，已知灰度值大小，一个字符表示的灰度值大小，
+                                        # 求该灰度值由第几个字符表示，ascii_char[i]
+
+if __name__ == '__main__': #如果是本程序调用，则执行以下程序
+
+    im = Image.open(IMG) #打开图片
+    im = im.resize((WIDTH,HEIGHT), Image.NEAREST) #更改图片的显示比例
+
+    txt = "" #txt初始值为空
+
+    for i in range(HEIGHT): #i代表纵坐标
+        for j in range(WIDTH): #j代表横坐标
+            txt += get_char(*im.getpixel((j,i))) #把图片按照横纵坐标解析成r,g,b以及alpha这几个参数，然后调用get_char函数，把对应的图片转换成灰度值，把对应值得字符存入txt中
+        txt += '\n' #每行的结尾处，自动换行
+
+    print("".format(txt)) #在界面打印txt文件
+
+    #字符画输出到文件
+    if OUTPUT:
+        with open(OUTPUT,'w') as f: #文件输出
+            f.write(txt)
+    else:
+        with open("output.txt",'w') as f: #文件输出
+            f.write(txt)
