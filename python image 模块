@@ -8,18 +8,126 @@ from PIL import Image
 最常见的图像格式文件中。PIL 中最重要的模块为 Image 。
 
 二、读取与存储
-1.读取 Image.open
+1.读取 img.open('file path')
 # coding=utf-8
 from PIL import Image
 # 读取图片
 img = Image.open('qq_image.jpg')
 
-2.存储
+2.存储 img.save('new file','format')
+# coding=utf-8
+from PIL import Image
+# 读取图片
+img = Image.open('qq_image.jpg')
+# 保存图片
+img.save('qq_image1.jpg', 'JPEG')
+img.save('qq_image.png')
+
+三、图像基本操作 
+1.输出图片的信息（格式、尺寸以及图像类型）img.format,img.size,img.mode
+# coding=utf-8
+from PIL import Image
+# 读取图片
+img = Image.open('qq_image.jpg')
+# 输出图片的格式，尺寸以及图像类型
+print(img.format, img.size, img.mode)
+
+2.图像显示 img.show()
+#coding=utf-8
+from PIL import Image
+#读取图片
+img = Image.open('qq_image.jpg')
+#显示图片
+img.show()
+在PyCharm下运行，会直接调用Windows照片查看器来显示图片
+
+3.生成缩略图 img.thumbnail((a,b))
+thumbnail() 方法接受一个元组参数（该参数指定生成缩略图的大小），然后将图像转换成符合元组参数指定大小的缩略图。
 # coding=utf-8
 from PIL import Image
 # 读取图片
 img = Image.open('qq_image.jpg')
 # 生成缩略图
 img.thumbnail((128, 128))
-# 保存图片
-img.save('qq_image_thumb.jpg', 'JPEG')
+# 显示图片
+img.show()
+
+4.更改图片尺寸 img.resize((a,b))
+# coding=utf-8
+from PIL import Image
+# 读取图片
+img = Image.open('qq_image.jpg')
+# 缩放图片为50*50
+resize1 = img.resize((50, 50))
+resize1.show()
+
+5.旋转图像 img.rotate(the value of angle) /img.transpose(Image.ROTATE_90)
+# coding=utf-8
+from PIL import Image
+# 读取图片
+img = Image.open('qq_image.jpg')
+# 逆时针旋转45度
+rorate1 = img.rotate(45)
+rorate1.show()
+# 逆时针旋转90，只有选择90度，180度以及270度的时候才能用img.transpose(Image.ROTATE_90)，其他角度用rotate
+rorate2 = img.transpose(Image.ROTATE_90)
+rorate2.show()
+
+6.翻转图像 img.rotate(Image.FLIP_LEFT_RIGHT) / img.rotate(Image.FLIP_TOP_BOTTOM) 
+# coding=utf-8
+from PIL import Image
+# 读取图片
+img = Image.open('qq_image.jpg')
+# 左右对换
+rorate3 = img.transpose(Image.FLIP_LEFT_RIGHT)
+rorate3.show()
+# 上下翻转
+rorate4 = img.transpose(Image.FLIP_TOP_BOTTOM)
+rorate4.show()
+
+7.图像灰度化 img.convert('L')
+# coding=utf-8
+from PIL import Image
+# 读取图片
+img = Image.open('qq_image.jpg')
+# 图片转换为灰度
+grey = img.convert('L')
+grey.show()
+
+8.某个像素点的色彩值的获取以及更改 img.getpixel((i,j)) / img.putpixel((i,j),(R,G,B))
+# coding=utf-8
+from PIL import Image
+# 读取图片
+img = Image.open('qq_image.jpg')
+# 获取某个位置像素的RGB值，getpixel是检索指定坐标点像素的RGB值的函数
+print(img.getpixel((100, 100)))
+# 更改某个位置像素的RGB值，putpixel是在指定位置画一像素点的函数
+img.putpixel((100, 100), (0, 0, 0))
+
+9.裁剪图片 img.crop((left, upper, right, lower))
+# coding=utf-8
+from PIL import Image
+# 读取图片
+img = Image.open('qq_image.jpg')
+# 裁剪图片box为裁剪图片的区域范围
+box = (100, 100, 250, 250)
+region = img.crop(box)
+region.show()
+注意：Python规定左上角为(0, 0)的坐标点，box由一个4元组(左，上，右，下)定义，表示为坐标为： (left, upper, right, lower)，
+最后的两个数字必须比前面两个要大。如图：
+
+10.粘贴图像 img.paste(pic1,pic2)
+# coding=utf-8
+from PIL import Image
+# 读取图片
+img = Image.open('qq_image.jpg')
+# 裁剪图片 box为裁剪图片的区域范围
+box = (100, 100, 250, 250)
+region = img.crop(box)
+region.show()
+# 逆时针旋转图片180度
+region2 = region.transpose(Image.ROTATE_180)
+region2.show()
+# 图片的粘贴
+img.paste(region2, box)
+img.show()
