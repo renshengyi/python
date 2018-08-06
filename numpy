@@ -136,7 +136,7 @@ a = "abcdef"
 b = np.fromstring(a,dtype=np.int8) # 因为一个字符为8为，所以指定dtype为np.int8
 print(b) # 返回 [ 97  98  99 100 101 102]
 
-6)fromfunction  np.fromfunction(func,(a,b))  func指定与行列号有关的函数
+6)fromfunction  np.fromfunction(func,(a,b))  func指定与行列号有关的函数   
 fromfunction()方法可以根据矩阵的行号列号生成矩阵的元素。 
 例如创建一个矩阵，矩阵中的每个元素都为行号和列号的和。
 import numpy as np
@@ -152,6 +152,66 @@ print(a)
  [ 3.  4.  5.  6.  7.  8.]
  [ 4.  5.  6.  7.  8.  9.]]
 #注意这里行号的列号都是从0开始的
+***匿名函数 lambda：是指一类无需定义标识符（函数名）的函数或子程序。 
+lambda 函数可以接收任意多个参数 (包括可选参数) 并且返回单个表达式的值。
+np.fromfunction(lambda i, j: i + j, (3, 3))   lambda
+# array([[0., 1., 2.],
+       [1., 2., 3.],
+       [2., 3., 4.]])
+
+7)intersect1d()
+（1）求两个数组的交集
+np.intersect1d([1, 3, 4, 3], [3, 1, 2, 1])
+# array([1, 3])
+（2）交集的数组多于两个, 可使用 functools.reduce:
+from functools import reduce
+reduce(np.intersect1d, ([1, 3, 4, 3], [3, 1, 2, 1], [6, 3, 4, 2]))
+# array([3])
+
+8)argsort()
+将随机二维数组按照第 3 列从上到下进行升序排列：
+Z = np.random.randint(0,10,(5,5))
+print("排序前：\n",Z)
+Z[Z[:,2].argsort()]
+# 排序前：
+ [[0 8 2 9 8]
+ [7 1 1 3 8]
+ [2 2 6 1 9]
+ [5 7 7 5 3]
+ [4 3 6 2 6]]
+# array([[7, 1, 1, 3, 8],
+       [0, 8, 2, 9, 8],
+       [2, 2, 6, 1, 9],
+       [4, 3, 6, 2, 6],
+       [5, 7, 7, 5, 3]])
+       
+8)bincount()
+找出随机一维数组中出现频率最高的值
+>>> Z = np.random.randint(0,10,50)
+>>> print("随机一维数组:", Z)
+>>> np.bincount(Z).argmax()
+# 随机一维数组: [7 3 1 0 0 6 3 3 4 2 2 9 4 3 9 9 2 5 4 8 4 9 2 8 1 9 1 0 0 8 5 8 0 8 2 3 2
+ 4 8 1 0 1 3 6 6 9 0 1 2 4]
+# 0
+
+9)计算欧式距离 lg.norm(b-a)
+import numpy as np
+import numpy.linalg as lg
+a = np.array([1, 2])
+b = np.array([7, 8])
+lg.norm(b-a)
+# 8.48528137423857
+
+10) 计算相关系数 np.corrcoef(a)
+>>> Z = np.array([
+    [1, 2, 1, 9, 10, 3, 2, 6, 7], # 特征 A
+    [2, 1, 8, 3, 7, 5, 10, 7, 2], # 特征 B
+    [2, 1, 1, 8, 9, 4, 3, 5, 7]]) # 特征 C
+>>> np.corrcoef(Z)
+# array([[ 1.  , -0.06,  0.97],
+       [-0.06,  1.  , -0.01],
+       [ 0.97, -0.01,  1.  ]])
+
 
 5.矩阵的常规运算
 +	矩阵对应元素相加
