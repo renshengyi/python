@@ -1,14 +1,14 @@
-numpy库
-一、简介
+Python Numpy库
+一、NumPy 简介
 NumPy 是一个 Python 包。 它代表 “Numeric Python”。 它是一个由多维数组对象和用于处理数组的例程集合组成的库。
 
-二、NumPy 操作
+二、NumPy 功能
 使用NumPy，开发人员可以执行以下操作：
 数组的算数和逻辑运算。
 傅立叶变换和用于图形操作的例程。
 与线性代数有关的操作。 NumPy 拥有线性代数和随机数生成的内置函数。
 
-三、
+三、NumPy 操作
 1.创建矩阵（采用ndarray对象） np.arrary([])
 import numpy as np #引入numpy库
 #创建一维的narray对象
